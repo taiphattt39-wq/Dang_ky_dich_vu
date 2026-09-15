@@ -1,1 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blox Code - Nền tảng lập trình Việt 🇻🇳</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <style>
+        .CodeMirror { 
+            height: 60vh; 
+            background: #0f172a; 
+            color: #e2e8f0; 
+            font-family: monospace; 
+            font-size: 15px;
+            border-radius: 0.5rem;
+            border: 1px solid #334155;
+        }
+        .ket-qua { 
+            min-height: 220px; 
+            background: #020617; 
+            font-family: monospace; 
+            white-space: pre-wrap; 
+            overflow-y: auto;
+            border-radius: 0.5rem;
+            border: 1px solid #334155;
+        }
+        .hdan {
+            background: #1e293b;
+            border-radius: 0.5rem;
+            border: 1px solid #475569;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 m-0 p-4">
+    <div class="max-w-7xl mx-auto">
+        <header class="bg-sky-800 p-4 rounded-xl mb-4 flex justify-between items-center shadow-lg">
+            <h1 class="text-xl font-bold">🧱 BLOX CODE - LẬP TRÌNH TIẾNG VIỆT</h1>
+            <div class="flex gap-3">
+                <button id="nutHd" class="bg-amber-500 hover:bg-amber-400 px-5 py-2 rounded-xl font-semibold">📖 Hướng dẫn</button>
+                <button id="nutChay" class="bg-emerald-500 hover:bg-emerald-600 px-6 py-2 rounded-xl font-semibold">▶ CHẠY NGAY</button>
+            </div>
+        </header>
 
+        <!-- Khu HƯỚNG DẪN -> Mặc định ẨN, bấm nút mới hiện -->
+        <div id="khuHd" class="hdan p-5 mb-6 hidden">
+            <h2 class="text-lg font-bold text-amber-300 mb-3">📖 HƯỚNG DẪN SỬ DỤNG</h2>
+            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                <div>
+                    <h3 class="font-semibold text-sky-200 mb-1">Cấu trúc cơ bản</h3>
+                    <ul class="space-y-0.5 text-slate-300">
+                        <li>• Khai báo: <code class="bg-slate-700 px-1 rounded">biến tên = giá_trị</code></li>
+                        <li>• Hàm: <code class="bg-slate-700 px-1 rounded">hàm tên(tham_số):</code></li>
+                        <li>• In ra: <code class="bg-slate-700 px-1 rounded">in("Nội dung")</code></li>
+                        <li>• Nhập: <code class="bg-slate-700 px-1 rounded">biến = nhập("Hỏi gì?")</code></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-sky-200 mb-1">Điều kiện & Lặp</h3>
+                    <ul class="space-y-0.5 text-slate-300">
+                        <li>• Nếu: <code class="bg-slate-700 px-1 rounded">nếu điều_kiện:</code></li>
+                        <li>• Còn nếu / Còn lại</li>
+                        <li>• Lặp khi: <code class="bg-slate-700 px-1 rounded">lặp_khi điều_kiện:</code></li>
+                        <li>• Lặp mỗi / trong phạm vi</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-sky-200 mb-1">Giá trị & Luồng</h3>
+                    <ul class="space-y-0.5 text-slate-300">
+                        <li>• Đúng / Sai / Rỗng</li>
+                        <li>• và / hoặc / không</li>
+                        <li>• trả_về kết quả</li>
+                        <li>• ngắt / tiếp_tục</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <main class="grid md:grid-cols-2 gap-6">
+            <!-- SOẠN THẢO: TRỐNG HOÀN TOÀN -->
+            <div>
+                <h2 class="mb-3 text-lg font-semibold text-sky-300">✍️ Viết mã tại đây:</h2>
+                <textarea id="khungMa" name="code"></textarea>
+            </div>
+            <!-- KẾT QUẢ -->
+            <div>
+                <h2 class="mb-3 text-lg font-semibold text-emerald-300">📤 Kết quả / Bảng điều khiển:</h2>
+                <div id="khungKetQua" class="ket-qua p-5 text-slate-300">— Chưa chạy. Viết mã và nhấn "Chạy Ngay" —</div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Trình soạn thảo trống + gợi ý mờ
+        const editor = CodeMirror.fromTextArea(document.getElementById("khungMa"), {
+            lineNumbers: true, indentUnit:4, tabSize:4, indentWithTabs:false, lineWrapping:true,
+            placeholder:"Viết mã bằng ngôn ngữ tiếng Việt tại đây...\nVí dụ đơn giản:\nbiến tên = nhập("Tên bạn?")\nin("Chào", tên)"
+        });
+
+        // Bật/Tắt Hướng dẫn
+        document.getElementById("nutHd").addEventListener("click", ()=>{
+            document.getElementById("khuHd").classList.toggle("hidden");
+        });
+
+        // Chạy mã -> Gửi về máy chủ
+        document.getElementById("nutChay").addEventListener("click", async ()=>{
+            const kq = document.getElementById("khungKetQua");
+            kq.textContent = "⏳ Đang xử lý...";
+            kq.className = "ket-qua p-5 text-amber-200 bg-slate-950";
+            try{
+                const res = await fetch("/api/chay", {
+                    method:"POST", headers:{"Content-Type":"application/json"},
+                    body:JSON.stringify({code:editor.getValue()})
+                });
+                const d = await res.json();
+                if(d.thanhcong){
+                    kq.textContent = "✅ THÀNH CÔNG:\n\n" + (d.ketqua || "(Không có kết quả in ra)");
+                    kq.className = "ket-qua p-5 text-emerald-200 bg-emerald-950/30 border border-emerald-800";
+                }else{
+                    kq.textContent = "❌ LỖI:\n" + (d.loi || "Không rõ lỗi");
+                    kq.className = "ket-qua p-5 text-red-200 bg-red-950/30 border border-red-800";
+                }
+            }catch(e){
+                kq.textContent = "❌ Lỗi kết nối/máy chủ: " + e.message;
+                kq.className = "ket-qua p-5 text-red-200 bg-red-950";
+            }
+        });
+    </script>
+</body>
+</html>
